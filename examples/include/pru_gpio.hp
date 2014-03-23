@@ -66,8 +66,14 @@
         mov r1, gpio_offset | GPIO_DATAOUT
         lbbo r0, r1, 0, 4
         lsr r0, r0, pin
-        xor r0, r0, 1
-        sbbo r0, r1, 0, 4
+        and r0, r0, 1
+        qbeq CLEARGPIO, r0, 1
+SETGPIO:
+        setgpio gpio_offset, pin
+        qba FINISHED
+CLEARGPIO: 
+        cleargpio gpio_offset, pin
+FINISHED:
 .endm
 
  

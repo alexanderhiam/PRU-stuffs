@@ -1,0 +1,85 @@
+// * pru_gpio.hp
+// * Mar. 2014
+// *
+// * A basic GPIO driver for the AM335x PRUSS.
+// * Provides macros for controlling the AM335x GPIO registers.
+// *
+// * Include in assembly file with:
+// *  #include "pru_gpio.hp"
+// *
+// * See inline comments for macro usage.
+// *
+// *   Copyright (c) 2014 - Alexander Hiam <hiamalexander@gmail.com>
+// *
+// *   This program is free software: you can redistribute it and/or modify
+// *   it under the terms of the GNU General Public License as published by
+// *   the Free Software Foundation, either version 3 of the License, or
+// *   (at your option) any later version.
+// *
+// *   This program is distributed in the hope that it will be useful,
+// *   but WITHOUT ANY WARRANTY ; without even the implied warranty of
+// *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// *   GNU General Public License for more details.
+// *
+// *   You should have received a copy of the GNU General Public License     
+// *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// *
+
+#define GPIO0              0x44e07000
+#define GPIO1              0x4804c000
+#define GPIO2              0x481ac000
+#define GPIO3              0x4804e000
+
+#define GPIO_DATAIN        0x138
+#define GPIO_DATAOUT       0x13c
+#define GPIO_CLEARDATAOUT  0x190
+#define GPIO_SETDATAOUT    0x194
+
+
+// Set the given pin of the given GPIO module high, e.g.:
+//      setgpio GPIO1, 28
+// will set GPIO1_28 high
+.macro setgpio
+.mparam gpio_offset, pin
+        mov r0, 1<<pin
+        mov r1, gpio_offset | GPIO_SETDATAOUT
+        sbbo r0, r1, 0, 4
+.endm
+
+
+// Set the given pin of the given GPIO module low, e.g.:
+//      cleargpio GPIO1, 28
+// will set GPIO1_28 low
+.macro cleargpio
+.mparam gpio_offset, pin
+        mov r0, 1<<pin
+        mov r1, gpio_offset | GPIO_CLEARDATAOUT
+        sbbo r0, r1, 0, 4
+.endm
+
+        
+// Inverts the state of the given pin in the given GPIO module, e.g.:
+//      togglegpio GPIO1, 28
+// will change GPIO1_28 from high to low or from low to high
+.macro togglegpio
+.mparam gpio_offset, pin
+        mov r1, gpio_offset | GPIO_DATAOUT
+        lbbo r0, r1, 0, 4
+        lsr r0, r0, pin
+        xor r0, r0, 1
+        sbbo r0, r1, 0, 4
+.endm
+
+ 
+// Read the state of the given pin the the GIO module and load it into
+// the register R0, e.g. after invocing:
+//      getpin GPIO1, 28
+// R0 will contain either 0 or 1 indicating the level read on GPIO1_28 
+// UNTESTED...
+.macro getgpio
+.mparam gpio_offset, pin
+        mov r1, gpio_offset | GPIO_DATAIN
+        lbbo r0, r1, 0, 4
+        lsr r0, r0, pin
+        and r0, r0, 1
+.endm

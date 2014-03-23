@@ -1,0 +1,72 @@
+// * pru_delay.hp
+// * Mar. 2014
+// *
+// * Defines some basic delay macros for the AM335x PRUSS.
+// *
+// * Include in assembly file with:
+// *  #include "pru_delay.hp"
+// *
+// * See inline comments for macro usage.
+// *
+// *   Copyright (c) 2014 - Alexander Hiam <hiamalexander@gmail.com>
+// *
+// *   This program is free software: you can redistribute it and/or modify
+// *   it under the terms of the GNU General Public License as published by
+// *   the Free Software Foundation, either version 3 of the License, or
+// *   (at your option) any later version.
+
+// *    This program is distributed in the hope that it will be useful,
+// *    but WITHOUT ANY WARRANTY ; without even the implied warranty of
+// *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// *    GNU General Public License for more details.
+
+// *    You should have received a copy of the GNU General Public License     
+// *    along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// *
+
+// These values were figured out through trial and error, tweak as needed:
+#define LOOPS_PER_US 98
+#define LOOPS_PER_MS 99993
+
+
+// Delay by performing one SUB and one QBNE the given number of times, e.g.:
+//      delaycount 10000
+// uses register r0 by default, but other register can be specified e.g.:
+//      delaycount 10000, r1 
+.macro delaycount
+.mparam count, reg=r0
+        mov reg, count
+DELAY_LOOP:
+        sub reg, reg, 1
+        qbne DELAY_LOOP, reg, 0
+.endm
+
+// Delay roughly the given number of microseconds, e.g.:
+//      delayus 100
+// will delay approx. 100us. Uses register r0 and r1
+.macro delayus
+.mparam us
+        mov r0, us
+DELAYUS:
+        mov r1, LOOPS_PER_US
+DELAYCOUNT:
+        sub r1, r1, 1
+        qbne DELAYCOUNT, r1, 0
+        sub r0, r0, 1
+        qbne DELAYUS, r0, 0
+.endm
+
+// Delay roughly the given number of milliseconds, e.g.:
+//      delayms 1000
+// will delay approx. 1 sec. Uses register r0 and r1
+.macro delayms
+.mparam ms
+        mov r0, ms
+DELAYMS:
+        mov r1, LOOPS_PER_MS
+DELAYCOUNT:
+        sub r1, r1, 1
+        qbne DELAYCOUNT, r1, 0
+        sub r0, r0, 1
+        qbne DELAYMS, r0, 0
+.endm

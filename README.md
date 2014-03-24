@@ -56,4 +56,12 @@ If all goes well you should see:
 
 ###Examples
 
-See `./examples/blink/README.md`
+Included example programs:
+
+ - Blink: `./examples/blink/`
+ - Blink until button press: `./examples/blink_until_button/`
+
+###Helper libraries
+
+I've split out some helpful assembly into macros and put them into their own
+files inside `examples/include/`.

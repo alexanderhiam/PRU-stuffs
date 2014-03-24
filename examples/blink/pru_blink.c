@@ -43,7 +43,7 @@ int main(void) {
   prussdrv_pruintc_init(&pruss_intc_initdata);
   printf("interrupt initialized\n");
 
-  printf("Running prublink\n");
+  printf("Running pru_blink\n");
   status = prussdrv_exec_program(PRU_NUM, "./pru_blink.bin");
   if (status) {
     printf("prussdrv_exec_program failed!\n");
@@ -52,7 +52,7 @@ int main(void) {
 
   printf("waiting for interrupt (halt instruction)\n");
   prussdrv_pru_wait_event(PRU_EVTOUT_0);
-  printf("prublink finished running!\n");
+  printf("pru_blink finished running!\n");
   prussdrv_pru_clear_event(PRU_EVTOUT_0, PRU0_ARM_INTERRUPT);
 
   return 0;

@@ -21,7 +21,7 @@ output (requires [PyBBIO](https://github.com/alexanderhiam/PyBBIO)):
 
 If you haven't yet, enbale the PRU and uio_pruss driver (only need to once per boot):
  
-    # echo BB-BONE-PRU-01 > $SLOTS
+    # echo BB-BONE-PRU-01 > /sys/devices/bone_capemgr.*/slots
     # modprobe uio_pruss
 
 Wire an LED to GPIO1_28 or attach an oscilloscope and run pru_blink:

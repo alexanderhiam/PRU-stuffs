@@ -33,7 +33,7 @@ Then source it with:
 Next the PRU needs to be enabled, which can be done with a Device Tree overlay that 
 was included with the Debian image I'm using:
 
-    # echo BB-BONE-PRU-01 > $SLOTS
+    # echo BB-BONE-PRU-01 > /sys/devices/bone_capemgr.*/slots
 
 Next enable the uio_pruss kernel module, which exports PRU host event interrupts to 
 user-space, and also exposes the PRU L3 RAM and DDR RAM for user-space reading and writing:

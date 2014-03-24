@@ -81,7 +81,6 @@ FINISHED:
 // the register R0, e.g. after invocing:
 //      getpin GPIO1, 28
 // R0 will contain either 0 or 1 indicating the level read on GPIO1_28 
-// UNTESTED...
 .macro getgpio
 .mparam gpio_offset, pin
         mov r1, gpio_offset | GPIO_DATAIN
